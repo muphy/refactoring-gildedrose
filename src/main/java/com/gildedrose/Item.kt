@@ -19,6 +19,7 @@ open class BaseItem(
         val name = name
         age()
         degrade()
+        saturate()
     }
 
     protected open fun age() {
@@ -29,6 +30,11 @@ open class BaseItem(
         if (quality > 0) {
             quality -= 1
         }
+    }
+
+    protected open fun saturate() {
+        if(quality < 0 ) quality = 0
+        if(quality > 50) quality = 50
     }
 }
 
@@ -104,6 +110,10 @@ class Sulfuras(
     override fun degrade() {
     }
     override fun age() {
+    }
+    override fun saturate() {
+        if(quality < 0 ) quality = 0
+        if(quality > 50) quality = 80
     }
 
 }
