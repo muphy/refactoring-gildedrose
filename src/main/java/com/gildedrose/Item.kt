@@ -16,7 +16,6 @@ open class BaseItem(
     quality: Int = 0
 ) : Item(name, sellIn, quality) {
     fun update() {
-        val name = name
         age()
         degrade()
         saturate()
@@ -44,13 +43,10 @@ class Brie(
     quality: Int = 0
 ) : BaseItem(name, sellIn, quality) {
     override fun degrade() {
-        if (quality < 50) {
-            quality = quality + 1
-        }
         if (sellIn < 0) {
-            if (quality < 50) {
-                quality += 1
-            }
+            quality += 2
+        } else {
+            quality += 1
         }
     }
 
@@ -61,23 +57,11 @@ class Pass(
     sellIn: Int = 0,
     quality: Int = 0
 ) : BaseItem(name, sellIn, quality) {
-    override fun degrade() {
-        if (quality < 50) {
-            quality = quality + 1
-            if (sellIn < 10) {
-                if (quality < 50) {
-                    quality += 1
-                }
-            }
-            if (sellIn < 5) {
-                if (quality < 50) {
-                    quality += 1
-                }
-            }
-        }
-        if (sellIn < 0) {
-            quality = 0
-        }
+    override fun degrade() = when {
+        sellIn < 0 -> quality = 0
+        sellIn < 5 -> quality += 3
+        sellIn < 10 -> quality += 2
+        else -> quality += 1
     }
 
 }
