@@ -16,46 +16,22 @@ open class BaseItem(
     quality: Int = 0
 ) : Item(name, sellIn, quality) {
     fun update() {
-        age()
-        degrade()
-        saturate()
-    }
-
-    protected open fun age() {
         sellIn = sellIn - aging()
-    }
-
-    protected open fun degrade() {
-        quality = degradation(sellIn, this.quality)
+        quality = saturation(quality - degradation(sellIn, quality))
     }
 
     protected open fun degradation(sellIn: Int, quality: Int) = when {
-        sellIn < 0 -> quality - 2
-        else -> quality - 1
+        sellIn < 0 -> 2
+        else -> 1
     }
 
-
-    protected open fun saturate() {
-        if (quality < 0) quality = 0
-        if (quality > 50) quality = 50
+    protected open fun saturation(quality: Int) = when {
+        quality < 0 -> 0
+        quality > 50 -> 50
+        else -> quality
     }
 
     protected open fun aging() = 1
-}
-
-class Brie(
-    name: String,
-    sellIn: Int = 0,
-    quality: Int = 0
-) : BaseItem(name, sellIn, quality) {
-    override fun degrade() {
-        if (sellIn < 0) {
-            quality += 2
-        } else {
-            quality += 1
-        }
-    }
-
 }
 
 class Sulfuras(
@@ -63,27 +39,32 @@ class Sulfuras(
     sellIn: Int = 0,
     quality: Int = 0
 ) : BaseItem(name, sellIn, quality) {
-
     override fun aging() = 0
-    override fun degrade() {
-    }
-
-    override fun saturate() {
-        if (quality < 0) quality = 0
-        if (quality > 50) quality = 80
-    }
-
+    override fun degradation(sellIn: Int, quality: Int) = 0
+    override fun saturation(quality: Int) = quality
 }
+
+class Brie(
+    name: String,
+    sellIn: Int = 0,
+    quality: Int = 0
+) : BaseItem(name, sellIn, quality) {
+    override fun degradation(sellIn: Int, quality: Int) = when {
+        sellIn < 0 -> -2
+        else -> -1
+    }
+}
+
 class Pass(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0
 ) : BaseItem(name, sellIn, quality) {
-    override fun degrade() = when {
-        sellIn < 0 -> quality = 0
-        sellIn < 5 -> quality += 3
-        sellIn < 10 -> quality += 2
-        else -> quality += 1
+    override fun degradation(sellIn: Int, quality: Int) = when {
+        sellIn < 0 -> quality
+        sellIn < 5 -> -3
+        sellIn < 10 -> -2
+        else -> -1
     }
 
 }
@@ -92,36 +73,16 @@ class Elixir(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0
-) : BaseItem(name, sellIn, quality) {
-    override fun degrade() {
-        if (quality > 0) {
-            quality -= 1
-        }
-        if (sellIn < 0) {
-            if (quality > 0) {
-                quality -= 1
-            }
-        }
-    }
-
-
-}
-
+) : BaseItem(name, sellIn, quality) {}
 
 class Conjured(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0
 ) : BaseItem(name, sellIn, quality) {
-    override fun degrade() {
-        if (quality > 0) {
-            quality -= 1
-        }
-        if (sellIn < 0) {
-            if (quality > 0) {
-                quality = quality - 1
-            }
-        }
+    override fun degradation(sellIn: Int, quality: Int) = when {
+        sellIn < 0 -> 2
+        else -> 1
     }
 
 }
