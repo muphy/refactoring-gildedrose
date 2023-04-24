@@ -20,17 +20,17 @@ open class BaseItem(
             sellIn < 0 -> 2
             else -> 1
         }
+    }, protected open val saturation: (Int) -> Int = { quality: Int ->
+        when {
+            quality < 0 -> 0
+            quality > 50 -> 50
+            else -> quality
+        }
     }
 ) : Item(name, sellIn, quality) {
     fun update() {
         sellIn = sellIn - aging()
         quality = saturation(quality - degradation(sellIn, quality))
-    }
-
-    protected open fun saturation(quality: Int) = when {
-        quality < 0 -> 0
-        quality > 50 -> 50
-        else -> quality
     }
 
 }
@@ -40,16 +40,17 @@ class Sulfuras(
     sellIn: Int = 0,
     quality: Int = 0,
     aging: () -> Int = { 0 },
-    override val degradation: (Int, Int) -> Int = { _: Int, _: Int -> 0 }
+    override val degradation: (Int, Int) -> Int = { _: Int, _: Int -> 0 },
+    override val saturation: (Int) -> Int = { quality: Int -> quality }
 ) : BaseItem(name, sellIn, quality) {
 
-    override fun saturation(quality: Int) = quality
 }
 
 class Brie(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0, override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
+    quality: Int = 0,
+    override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
         when {
             sellIn < 0 -> -2
             else -> -1
@@ -62,7 +63,8 @@ class Brie(
 class Pass(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0, override val degradation: (Int, Int) -> Int = { sellIn: Int, quality: Int ->
+    quality: Int = 0,
+    override val degradation: (Int, Int) -> Int = { sellIn: Int, quality: Int ->
         when {
             sellIn < 0 -> quality
             sellIn < 5 -> -3
@@ -90,6 +92,5 @@ class Conjured(
             else -> 1
         }
     }
-) : BaseItem(name, sellIn, quality) {
+) : BaseItem(name, sellIn, quality)
 
-}
