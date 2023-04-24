@@ -22,7 +22,7 @@ class TexttestFixture {
             Pass("Backstage passes to a TAFKAL80ETC concert", 5, 49),  // this conjured item does not work properly yet
             Conjured("Conjured Mana Cake", 3, 6)
         )
-        val app = GildedRose(items)
+        var app = GildedRose(items)
         val days = 10
         for (i in 0 until days) {
             printStream.println("-------- day $i --------")
@@ -31,7 +31,7 @@ class TexttestFixture {
                 printStream.println(item)
             }
             printStream.println()
-            app.updateQuality()
+            app = app.updated()
         }
         Assertions.assertEquals(expected, byteArrayOutputStream.toString())
     }
