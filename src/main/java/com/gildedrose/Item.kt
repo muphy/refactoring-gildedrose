@@ -14,16 +14,17 @@ open class BaseItem(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0,
-    private val aging: () -> Int = { 1 }
+    private val aging: () -> Int = { 1 },
+    protected open val degradation: (Int, Int) -> Int = { sellIn: Int, quality: Int ->
+        when {
+            sellIn < 0 -> 2
+            else -> 1
+        }
+    }
 ) : Item(name, sellIn, quality) {
-    open fun update() {
+    fun update() {
         sellIn = sellIn - aging()
         quality = saturation(quality - degradation(sellIn, quality))
-    }
-
-    protected open fun degradation(sellIn: Int, quality: Int) = when {
-        sellIn < 0 -> 2
-        else -> 1
     }
 
     protected open fun saturation(quality: Int) = when {
@@ -38,37 +39,38 @@ class Sulfuras(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0,
-    aging: () -> Int =  { 0 }
+    aging: () -> Int = { 0 },
+    override val degradation: (Int, Int) -> Int = { _: Int, _: Int -> 0 }
 ) : BaseItem(name, sellIn, quality) {
-    override fun update() {
-        super.update()
-    }
-    override fun degradation(sellIn: Int, quality: Int) = 0
+
     override fun saturation(quality: Int) = quality
 }
 
 class Brie(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0
-) : BaseItem(name, sellIn, quality) {
-    override fun degradation(sellIn: Int, quality: Int) = when {
-        sellIn < 0 -> -2
-        else -> -1
+    quality: Int = 0, override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
+        when {
+            sellIn < 0 -> -2
+            else -> -1
+        }
     }
+) : BaseItem(name, sellIn, quality) {
+
 }
 
 class Pass(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0
-) : BaseItem(name, sellIn, quality) {
-    override fun degradation(sellIn: Int, quality: Int) = when {
-        sellIn < 0 -> quality
-        sellIn < 5 -> -3
-        sellIn < 10 -> -2
-        else -> -1
+    quality: Int = 0, override val degradation: (Int, Int) -> Int = { sellIn: Int, quality: Int ->
+        when {
+            sellIn < 0 -> quality
+            sellIn < 5 -> -3
+            sellIn < 10 -> -2
+            else -> -1
+        }
     }
+) : BaseItem(name, sellIn, quality) {
 
 }
 
@@ -81,11 +83,13 @@ class Elixir(
 class Conjured(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0
-) : BaseItem(name, sellIn, quality) {
-    override fun degradation(sellIn: Int, quality: Int) = when {
-        sellIn < 0 -> 2
-        else -> 1
+    quality: Int = 0,
+    override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
+        when {
+            sellIn < 0 -> 2
+            else -> 1
+        }
     }
+) : BaseItem(name, sellIn, quality) {
 
 }
