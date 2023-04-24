@@ -1,6 +1,6 @@
 package com.gildedrose
 
-open class Item(
+data class Item(
     val name: String,
     var sellIn: Int = 0,
     var quality: Int = 0,
@@ -9,21 +9,12 @@ open class Item(
     private val saturation: (Int) -> Int = Saturation.standard
 ) {
     override fun toString() = "$name, $sellIn, $quality"
-    fun update() {
-        sellIn = sellIn - aging()
-        quality = saturation(quality - degradation(sellIn, quality))
-    }
 
     fun updated(): Item {
         val sellIn = sellIn - aging()
-        val quality = saturation(quality - degradation(sellIn, quality))
-        return Item(
-            name,
-            sellIn,
-            quality,
-            aging,
-            degradation,
-            saturation
+        return this.copy(
+            sellIn = sellIn,
+            quality = saturation(this.quality - degradation(sellIn, this.quality))
         )
     }
 }
