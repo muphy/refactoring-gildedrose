@@ -27,7 +27,7 @@ class TexttestFixture {
         for (i in 0 until days) {
             printStream.println("-------- day $i --------")
             printStream.println("name, sellIn, quality")
-            for (item in items) {
+            for (item in app.items) {
                 printStream.println(item)
             }
             printStream.println()
