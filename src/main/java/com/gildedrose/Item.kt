@@ -10,7 +10,7 @@ open class Item(
 // in order to add operations to a type without changing initial type we could subclass type
 // so we could say we've got a class which is a base item
 
-open class BaseItem(
+class BaseItem(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0,
@@ -35,62 +35,60 @@ open class BaseItem(
 
 }
 
-class Sulfuras(
-    name: String,
-    sellIn: Int = 0,
-    quality: Int = 0,
-    aging: () -> Int = { 0 },
-    override val degradation: (Int, Int) -> Int = { _: Int, _: Int -> 0 },
-    override val saturation: (Int) -> Int = { quality: Int -> quality }
-) : BaseItem(name, sellIn, quality) {
+fun Sulfuras(name: String, sellIn: Int = 0, quality: Int = 0) = BaseItem(
+    name,
+    sellIn,
+    quality,
+    aging = { 0 },
+    degradation = { _, _ -> 0 },
+    saturation = { quality: Int -> quality }
+)
 
-}
-
-class Brie(
-    name: String,
-    sellIn: Int = 0,
-    quality: Int = 0,
-    override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
+fun Brie(name: String, sellIn: Int = 0, quality: Int = 0) = BaseItem(
+    name,
+    sellIn,
+    quality,
+    degradation = { sellIn: Int, _: Int ->
         when {
             sellIn < 0 -> -2
             else -> -1
         }
     }
-) : BaseItem(name, sellIn, quality) {
+)
 
-}
-
-class Pass(
+fun Pass(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0,
-    override val degradation: (Int, Int) -> Int = { sellIn: Int, quality: Int ->
+) = BaseItem(name,
+    sellIn,
+    quality,
+    degradation = { sellIn: Int, quality: Int ->
         when {
             sellIn < 0 -> quality
             sellIn < 5 -> -3
             sellIn < 10 -> -2
             else -> -1
         }
-    }
-) : BaseItem(name, sellIn, quality) {
+    })
 
-}
-
-class Elixir(
-    name: String,
-    sellIn: Int = 0,
-    quality: Int = 0
-) : BaseItem(name, sellIn, quality) {}
-
-class Conjured(
+fun Elixir(
     name: String,
     sellIn: Int = 0,
     quality: Int = 0,
-    override val degradation: (Int, Int) -> Int = { sellIn: Int, _: Int ->
+) = BaseItem(name, sellIn, quality)
+
+fun Conjured(
+    name: String,
+    sellIn: Int = 0,
+    quality: Int = 0,
+) = BaseItem(name,
+    sellIn,
+    quality,
+    degradation = { sellIn: Int, _: Int ->
         when {
             sellIn < 0 -> 2
             else -> 1
         }
-    }
-) : BaseItem(name, sellIn, quality)
+    })
 
