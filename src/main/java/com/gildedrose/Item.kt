@@ -13,9 +13,10 @@ open class Item(
 open class BaseItem(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0
+    quality: Int = 0,
+    private val aging: () -> Int = { 1 }
 ) : Item(name, sellIn, quality) {
-    fun update() {
+    open fun update() {
         sellIn = sellIn - aging()
         quality = saturation(quality - degradation(sellIn, quality))
     }
@@ -31,15 +32,17 @@ open class BaseItem(
         else -> quality
     }
 
-    protected open fun aging() = 1
 }
 
 class Sulfuras(
     name: String,
     sellIn: Int = 0,
-    quality: Int = 0
+    quality: Int = 0,
+    aging: () -> Int =  { 0 }
 ) : BaseItem(name, sellIn, quality) {
-    override fun aging() = 0
+    override fun update() {
+        super.update()
+    }
     override fun degradation(sellIn: Int, quality: Int) = 0
     override fun saturation(quality: Int) = quality
 }
