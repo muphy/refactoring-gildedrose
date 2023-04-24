@@ -12,7 +12,7 @@ class TexttestFixture {
         val printStream = PrintStream(byteArrayOutputStream)
         printStream.println("OMGHAI!")
         val items = arrayOf<Item>(
-            BaseItem("+5 Dexterity Vest", 10, 20),  //
+            Item("+5 Dexterity Vest", 10, 20),  //
             Brie("Aged Brie", 2, 0),  //
             Elixir("Elixir of the Mongoose", 5, 7),  //
             Sulfuras("Sulfuras, Hand of Ragnaros", 0, 80),  //
